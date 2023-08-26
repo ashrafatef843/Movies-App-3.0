@@ -54,7 +54,7 @@ class MoviesActivity : ComponentActivity() {
 
     @Composable
     fun Items() {
-        val moviesDto = moviesViewModel.state.value.moviesDto
+        val moviesDto = moviesViewModel.state.moviesDto
         Box(Modifier.fillMaxSize()) {
             LazyColumn(
                 modifier = if (moviesDto() == null)

@@ -1,6 +1,7 @@
 package com.example.movieapp3.common.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieapp3.common.CoroutineScopeDispatchers
 import com.example.movieapp3.common.presentation.dto.Async
 import com.example.movieapp3.common.presentation.dto.Fail
 import com.example.movieapp3.common.presentation.dto.Loading
@@ -8,8 +9,9 @@ import com.example.movieapp3.common.presentation.dto.Success
 import kotlinx.coroutines.*
 import kotlin.coroutines.EmptyCoroutineContext
 
-abstract class
-BaseViewModel : ViewModel() {
+abstract class BaseViewModel(
+    private val coroutineScopeDispatchers: CoroutineScopeDispatchers
+) : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
@@ -36,13 +38,11 @@ BaseViewModel : ViewModel() {
     ): Job {
         reducer(Loading(value = retainValue?.invoke()))
 
-        return viewModelScope.launch(dispatcher ?: EmptyCoroutineContext) {
+        return viewModelScope.launch(dispatcher ?: coroutineScopeDispatchers.Main) {
             try {
                 val result = invoke()
                 reducer(
-                    Success(
-                        result
-                    )
+                    Success(result)
                 )
             } catch (e: CancellationException) {
                 @Suppress("RethrowCaughtException")
