@@ -7,8 +7,9 @@ import com.example.movieapp3.common.dto.Movie
 import com.example.movieapp3.common.presentation.dto.Fail
 import com.example.movieapp3.common.presentation.dto.Loading
 import com.example.movieapp3.common.presentation.dto.Success
-import com.example.movieapp3.listing.data.repo.MoviesRepository
+import com.example.movieapp3.listing.domain.MoviesDiscoveryUseCase
 import com.example.movieapp3.listing.dto.MoviesDto
+import com.example.movieapp3.listing.presentation.MoviesViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -20,7 +21,7 @@ import org.junit.Test
 class MoviesViewModelTest {
 
     @MockK
-    private lateinit var moviesRepository: MoviesRepository
+    private lateinit var moviesDiscoveryUseCase: MoviesDiscoveryUseCase
     private lateinit var moviesViewModel: MoviesViewModel
     private val testCoroutineScopeDispatcher = TestCoroutineScopeDispatcher()
     private  val moviesDto: MoviesDto by lazy {
@@ -35,11 +36,11 @@ class MoviesViewModelTest {
     @Test
     fun `get movies WHEN movies repo return list of movies EXPECTED submit success`() {
         // Prepare
-        coEvery { moviesRepository.discoverMovies(1) } returns moviesDto
+        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } returns moviesDto
 
         //Execute
         // init viewmodel invoke getMovies in the init block
-        moviesViewModel = MoviesViewModel(moviesRepository, testCoroutineScopeDispatcher)
+        moviesViewModel = MoviesViewModel(moviesDiscoveryUseCase, testCoroutineScopeDispatcher)
 
         //Assert
         assertTrue(moviesViewModel.state.moviesDto is Loading)
@@ -53,11 +54,11 @@ class MoviesViewModelTest {
     @Test
     fun `get movies WHEN movies repo return error EXPECTED submit error`() {
         // Prepare
-        coEvery { moviesRepository.discoverMovies(1) } throws NetworkException()
+        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } throws NetworkException()
 
         //Execute
         // init viewmodel invoke getMovies in the init block
-        moviesViewModel = MoviesViewModel(moviesRepository, testCoroutineScopeDispatcher)
+        moviesViewModel = MoviesViewModel(moviesDiscoveryUseCase, testCoroutineScopeDispatcher)
 
         //Assert
         assertTrue(moviesViewModel.state.moviesDto is Loading)
@@ -81,12 +82,12 @@ class MoviesViewModelTest {
             2,
             2
         )
-        coEvery { moviesRepository.discoverMovies(1) } returns firstPage
-        coEvery { moviesRepository.discoverMovies(2) } returns secondPage
+        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } returns firstPage
+        coEvery { moviesDiscoveryUseCase.discoverMovies(2) } returns secondPage
 
         //Execute
         // init viewmodel invoke getMovies in the init block
-        moviesViewModel = MoviesViewModel(moviesRepository, testCoroutineScopeDispatcher)
+        moviesViewModel = MoviesViewModel(moviesDiscoveryUseCase, testCoroutineScopeDispatcher)
 
         //Assert
         assertTrue(moviesViewModel.state.moviesDto is Loading)
@@ -111,12 +112,12 @@ class MoviesViewModelTest {
     fun `get movies WHEN movies repo return new page as error EXPECTED submit previous page + error`() {
         // Prepare
         val unknownException = UnknownException("Unknown")
-        coEvery { moviesRepository.discoverMovies(1) } returns moviesDto
-        coEvery { moviesRepository.discoverMovies(2) } throws unknownException
+        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } returns moviesDto
+        coEvery { moviesDiscoveryUseCase.discoverMovies(2) } throws unknownException
 
         //Execute
         // init viewmodel invoke getMovies in the init block
-        moviesViewModel = MoviesViewModel(moviesRepository, testCoroutineScopeDispatcher)
+        moviesViewModel = MoviesViewModel(moviesDiscoveryUseCase, testCoroutineScopeDispatcher)
 
         //Assert
         assertTrue(moviesViewModel.state.moviesDto is Loading)

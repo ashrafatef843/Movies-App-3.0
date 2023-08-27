@@ -1,10 +1,9 @@
-package com.example.movieapp3.listing
+package com.example.movieapp3.listing.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,7 +65,10 @@ class MoviesActivity : ComponentActivity() {
             ) {
                 moviesDto()?.results?.let {
                     items(it.size) { i ->
-                        if (i == it.size - 1 && moviesDto is Success)
+                        if (i == it.size - 1 &&
+                            moviesDto is Success &&
+                            moviesDto().totalPages > moviesDto().page
+                            )
                             loadMore()
                         MovieItem(it[i])
                     }
