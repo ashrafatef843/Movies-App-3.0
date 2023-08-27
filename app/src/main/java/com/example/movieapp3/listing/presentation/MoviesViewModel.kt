@@ -47,6 +47,13 @@ class MoviesViewModel @Inject constructor(
 
     }
 
+    fun refresh() {
+       state = state.copy(
+            latestPage = 0,
+            moviesDto = Uninitialized
+        )
+        getMovies()
+    }
 }
 
 data class MoviesState(

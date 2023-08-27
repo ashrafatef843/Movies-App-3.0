@@ -24,10 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.movieapp3.R
 import com.example.movieapp3.common.const.MOVIES_POSTER_URL
 import com.example.movieapp3.common.presentation.dto.Fail
 import com.example.movieapp3.common.presentation.dto.Loading
@@ -35,6 +37,8 @@ import com.example.movieapp3.common.dto.Movie
 import com.example.movieapp3.common.presentation.dto.Success
 import com.example.movieapp3.common.presentation.handleHttpError
 import com.example.movieapp3.common.presentation.theme.MovieApp3Theme
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,41 +50,53 @@ class MoviesActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MovieApp3Theme {
-                Items()
+                Movies()
             }
         }
     }
 
     @Composable
-    fun Items() {
+    fun Movies() {
         val moviesDto = moviesViewModel.state.moviesDto
-        Box(Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = if (moviesDto() == null)
-                    Modifier
-                        .wrapContentSize()
-                        .align(Alignment.Center)
-                else
-                    Modifier.fillMaxSize()
-            ) {
-                moviesDto()?.results?.let {
-                    items(it.size) { i ->
-                        if (i == it.size - 1 &&
-                            moviesDto is Success &&
-                            moviesDto().totalPages > moviesDto().page
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = false),
+            onRefresh = moviesViewModel::refresh
+        ) {
+
+            Box(Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = if (moviesDto()?.results.isNullOrEmpty())
+                        Modifier
+                            .wrapContentSize()
+                            .align(Alignment.Center)
+                    else
+                        Modifier.fillMaxSize()
+                ) {
+                    moviesDto()?.results?.let {
+                        if (moviesDto is Success && it.isEmpty())
+                            item {
+                                EmptyMoviesItem()
+                            }
+
+                        items(it.size) { i ->
+                            if (i == it.size - 1 &&
+                                moviesDto is Success &&
+                                moviesDto().totalPages > moviesDto().page
                             )
-                            loadMore()
-                        MovieItem(it[i])
+                                loadMore()
+
+                            MovieItem(it[i])
+                        }
                     }
-                }
-                if (moviesDto is Loading)
-                    item {
-                        CircularLoading()
-                    }
-                if (moviesDto is Fail) {
-                    baseContext.handleHttpError(moviesDto.error)
-                    item {
-                        RetryButton()
+                    if (moviesDto is Loading)
+                        item {
+                            CircularLoading()
+                        }
+                    if (moviesDto is Fail) {
+                        baseContext.handleHttpError(moviesDto.error)
+                        item {
+                            RetryItem()
+                        }
                     }
                 }
             }
@@ -99,7 +115,7 @@ class MoviesActivity : ComponentActivity() {
         ) {
             AsyncImage(
                 model = MOVIES_POSTER_URL + movie.posterPath,
-                "Movie Image",
+                stringResource(R.string.title_movie_poster),
                 modifier = Modifier
                     .width(80.dp)
                     .height(120.dp)
@@ -134,13 +150,16 @@ class MoviesActivity : ComponentActivity() {
     }
 
     @Composable
-    fun RetryButton() {
-        Row(
+    fun RetryItem() {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
+            Text(text = stringResource(R.string.msg_something_wrong))
             Button(
                 modifier = Modifier
                     .wrapContentSize()
@@ -149,11 +168,33 @@ class MoviesActivity : ComponentActivity() {
                     loadMore()
                 }
             ) {
-                Text(text = "Retry", color = Color.White)
+                Text(text = stringResource(R.string.title_retry), color = Color.White)
             }
         }
     }
 
+    @Composable
+    fun EmptyMoviesItem() {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = stringResource(R.string.msg_empty_movies_list))
+            Button(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 8.dp),
+                onClick = {
+                    loadMore()
+                }
+            ) {
+                Text(text = stringResource(R.string.title_reload), color = Color.White)
+            }
+        }
+    }
     private fun loadMore() {
         moviesViewModel.getMovies()
     }

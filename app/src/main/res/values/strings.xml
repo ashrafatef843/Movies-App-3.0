@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MovieApp3</string>
+    <string name="msg_network_error">Please check your internet connection</string>
+    <string name="msg_something_wrong">Sorry, Please try again</string>
+    <string name="msg_unauthorized">Sorry, you are unauthorized</string>
+    <string name="title_retry">Retry</string>
+    <string name="title_movie_poster">Movie Poster</string>
+    <string name="msg_empty_movies_list">There is no movies available right now</string>
+    <string name="title_reload">Reload</string>
 </resources>
