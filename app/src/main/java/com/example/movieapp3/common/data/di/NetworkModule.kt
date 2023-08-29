@@ -21,7 +21,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val TIMEOUT = 30L
-    private const val BASE_URL = "https://api.themoviedb.org/3/discover/"
+    private const val BASE_URL = "https://api.themoviedb.org/3/"
 
     @Provides
     @Singleton
