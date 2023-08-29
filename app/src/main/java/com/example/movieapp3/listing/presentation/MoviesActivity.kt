@@ -34,9 +34,12 @@ import com.example.movieapp3.common.const.MOVIES_POSTER_URL
 import com.example.movieapp3.common.presentation.dto.Fail
 import com.example.movieapp3.common.presentation.dto.Loading
 import com.example.movieapp3.common.dto.Movie
+import com.example.movieapp3.common.presentation.CircularLoading
+import com.example.movieapp3.common.presentation.RetryItem
 import com.example.movieapp3.common.presentation.dto.Success
 import com.example.movieapp3.common.presentation.handleHttpError
 import com.example.movieapp3.common.presentation.theme.MovieApp3Theme
+import com.example.movieapp3.details.MovieDetailsActivity
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
@@ -95,7 +98,9 @@ class MoviesActivity : ComponentActivity() {
                     if (moviesDto is Fail) {
                         baseContext.handleHttpError(moviesDto.error)
                         item {
-                            RetryItem()
+                            RetryItem {
+                                loadMore()
+                            }
                         }
                     }
                 }
@@ -110,7 +115,7 @@ class MoviesActivity : ComponentActivity() {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clickable {
-
+                    MovieDetailsActivity.start(baseContext, movie.id)
                 }
         ) {
             AsyncImage(
@@ -133,42 +138,6 @@ class MoviesActivity : ComponentActivity() {
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Text(movie.voteCount.toString())
-            }
-        }
-    }
-
-    @Composable
-    fun CircularLoading() {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    }
-
-    @Composable
-    fun RetryItem() {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Text(text = stringResource(R.string.msg_something_wrong))
-            Button(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 8.dp),
-                onClick = {
-                    loadMore()
-                }
-            ) {
-                Text(text = stringResource(R.string.title_retry), color = Color.White)
             }
         }
     }

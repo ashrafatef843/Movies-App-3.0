@@ -14,10 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel @Inject constructor(
-    private val moviesDiscoveryUseCase: MoviesDiscoveryUseCase,
-    private val coroutineScopeDispatchers: CoroutineScopeDispatchers
-) : BaseViewModel(coroutineScopeDispatchers) {
+    class MoviesViewModel @Inject constructor(
+        private val moviesDiscoveryUseCase: MoviesDiscoveryUseCase,
+        private val coroutineScopeDispatchers: CoroutineScopeDispatchers
+    ) : BaseViewModel(coroutineScopeDispatchers) {
 
     var state by mutableStateOf(MoviesState())
     private set
@@ -28,7 +28,7 @@ class MoviesViewModel @Inject constructor(
 
     fun getMovies() {
         suspend {
-            moviesDiscoveryUseCase.discoverMovies(state.latestPage + 1)
+            moviesDiscoveryUseCase(state.latestPage + 1)
         }.execute(retainValue = state.moviesDto) {
             state = if (it is Success) {
                 state.copy(
