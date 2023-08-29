@@ -31,7 +31,7 @@ import com.example.movieapp3.common.presentation.RetryItem
 import com.example.movieapp3.common.presentation.dto.Fail
 import com.example.movieapp3.common.presentation.dto.Loading
 import com.example.movieapp3.common.presentation.dto.Success
-import com.example.movieapp3.details.ui.theme.MovieApp3Theme
+import com.example.movieapp3.common.presentation.theme.MovieApp3Theme
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
