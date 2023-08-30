@@ -1,7 +1,7 @@
 package com.example.movieapp3.listing.data.repo
 
-import com.example.movieapp3.listing.dto.MoviesDto
 import com.example.movieapp3.listing.data.remote.MoviesRemoteDataSource
+import com.example.movieapp3.listing.dto.MoviesDto
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
