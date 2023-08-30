@@ -36,7 +36,7 @@ class MoviesViewModelTest {
     @Test
     fun `get movies WHEN movies repo return list of movies EXPECTED submit success`() {
         // Prepare
-        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } returns moviesDto
+        coEvery { moviesDiscoveryUseCase(1) } returns moviesDto
 
         //Execute
         // init viewmodel invoke getMovies in the init block
@@ -54,7 +54,7 @@ class MoviesViewModelTest {
     @Test
     fun `get movies WHEN movies repo return error EXPECTED submit error`() {
         // Prepare
-        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } throws NetworkException()
+        coEvery { moviesDiscoveryUseCase(1) } throws NetworkException()
 
         //Execute
         // init viewmodel invoke getMovies in the init block
@@ -82,8 +82,8 @@ class MoviesViewModelTest {
             2,
             2
         )
-        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } returns firstPage
-        coEvery { moviesDiscoveryUseCase.discoverMovies(2) } returns secondPage
+        coEvery { moviesDiscoveryUseCase(1) } returns firstPage
+        coEvery { moviesDiscoveryUseCase(2) } returns secondPage
 
         //Execute
         // init viewmodel invoke getMovies in the init block
@@ -112,8 +112,8 @@ class MoviesViewModelTest {
     fun `get movies WHEN movies repo return new page as error EXPECTED submit previous page + error`() {
         // Prepare
         val unknownException = UnknownException("Unknown")
-        coEvery { moviesDiscoveryUseCase.discoverMovies(1) } returns moviesDto
-        coEvery { moviesDiscoveryUseCase.discoverMovies(2) } throws unknownException
+        coEvery { moviesDiscoveryUseCase(1) } returns moviesDto
+        coEvery { moviesDiscoveryUseCase(2) } throws unknownException
 
         //Execute
         // init viewmodel invoke getMovies in the init block
