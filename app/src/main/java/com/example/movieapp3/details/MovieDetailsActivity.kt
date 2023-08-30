@@ -44,6 +44,7 @@ class MovieDetailsActivity : ComponentActivity() {
     private val movieId: Int by lazy {
         intent!!.getIntExtra(MOVIE_ID_EXTRA, 0)
     }
+
     @Inject
     lateinit var factory: MovieDetailsViewModel.Factory
     private val movieDetailsViewModel: MovieDetailsViewModel by viewModels {
@@ -59,18 +60,14 @@ class MovieDetailsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val movieDetailsAsync = movieDetailsViewModel.state.movieDetails
-
-                    if (movieDetailsAsync is Success)
-                        MovieItem(movieDetailsAsync())
-
-                    if (movieDetailsAsync is Fail)
-                        RetryItem {
+                    when (val movieDetailsAsync = movieDetailsViewModel.state.movieDetails) {
+                        is Loading -> CircularLoading()
+                        is Success -> MovieItem(movieDetailsAsync())
+                        is Fail -> RetryItem {
                             movieDetailsViewModel.getMovieDetails()
                         }
-
-                    if (movieDetailsAsync is Loading)
-                        CircularLoading()
+                        else -> {}
+                    }
                 }
             }
         }

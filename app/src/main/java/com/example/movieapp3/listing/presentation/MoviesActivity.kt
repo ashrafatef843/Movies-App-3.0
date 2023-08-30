@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,15 +30,17 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.movieapp3.R
 import com.example.movieapp3.common.const.MOVIES_POSTER_URL
-import com.example.movieapp3.common.presentation.dto.Fail
-import com.example.movieapp3.common.presentation.dto.Loading
 import com.example.movieapp3.common.dto.Movie
 import com.example.movieapp3.common.presentation.CircularLoading
 import com.example.movieapp3.common.presentation.RetryItem
+import com.example.movieapp3.common.presentation.dto.Async
+import com.example.movieapp3.common.presentation.dto.Fail
+import com.example.movieapp3.common.presentation.dto.Loading
 import com.example.movieapp3.common.presentation.dto.Success
 import com.example.movieapp3.common.presentation.handleHttpError
 import com.example.movieapp3.common.presentation.theme.MovieApp3Theme
 import com.example.movieapp3.details.MovieDetailsActivity
+import com.example.movieapp3.listing.dto.MoviesDto
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,7 +66,6 @@ class MoviesActivity : ComponentActivity() {
             state = rememberSwipeRefreshState(isRefreshing = false),
             onRefresh = moviesViewModel::refresh
         ) {
-
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(
                     modifier = if (moviesDto()?.results.isNullOrEmpty())
@@ -91,19 +91,20 @@ class MoviesActivity : ComponentActivity() {
                             MovieItem(it[i])
                         }
                     }
-                    if (moviesDto is Loading)
-                        item {
-                            CircularLoading()
-                        }
-                    if (moviesDto is Fail) {
-                        baseContext.handleHttpError(moviesDto.error)
-                        item {
-                            RetryItem {
-                                loadMore()
+                    item {
+                        when (moviesDto) {
+                            is Loading -> CircularLoading()
+                            is Fail -> {
+                                baseContext.handleHttpError(moviesDto.error)
+                                RetryItem {
+                                    loadMore()
+                                }
                             }
+                            else -> {}
                         }
                     }
                 }
+
             }
         }
     }
@@ -164,6 +165,7 @@ class MoviesActivity : ComponentActivity() {
             }
         }
     }
+
     private fun loadMore() {
         moviesViewModel.getMovies()
     }
