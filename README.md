@@ -1,8 +1,8 @@
 # What is the Movie App 3.0.0?
-It's a code sample for a movie app that display the movies in MVI architecture pattern.
+It's a code sample for a movie app that displays the movies in MVI architecture pattern.
 
 # Requirements
-Android application that displays the list of trending movies, when we select one movie it shows more details about it.
+Android application that displays the list of trending movies and when we tab on any movie, it shows more details about it.
 
 # User Stories
 #### 1. As a user I wanna open the movie app, SO THAT I expect to see a list of movies.
