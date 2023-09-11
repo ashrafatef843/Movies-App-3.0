@@ -116,7 +116,7 @@ class MoviesActivity : ComponentActivity() {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clickable {
-                    MovieDetailsActivity.start(baseContext, movie.id)
+                    MovieDetailsActivity.start(this@MoviesActivity, movie.id)
                 }
         ) {
             AsyncImage(

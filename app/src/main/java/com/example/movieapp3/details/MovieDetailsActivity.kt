@@ -58,7 +58,7 @@ class MovieDetailsActivity : ComponentActivity() {
             MovieApp3Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
                     when (val movieDetailsAsync = movieDetailsViewModel.state.movieDetails) {
                         is Loading -> CircularLoading()
