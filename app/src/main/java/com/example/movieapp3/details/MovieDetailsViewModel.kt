@@ -14,6 +14,9 @@ import com.example.movieapp3.details.domain.MovieFetchingUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
 class MovieDetailsViewModel @AssistedInject constructor(
     @Assisted private val movieId: Int,
@@ -57,3 +60,9 @@ class MovieDetailsViewModel @AssistedInject constructor(
 data class MovieDetailsState(
     val movieDetails: Async<MovieDetails> = Uninitialized
 )
+
+@EntryPoint
+@InstallIn(ActivityComponent::class)
+interface ViewModelFactoryProvider {
+    fun movieDetailsViewModelFactory(): MovieDetailsViewModel.Factory
+}
