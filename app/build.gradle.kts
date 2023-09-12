@@ -4,16 +4,17 @@ plugins {
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    id ("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.movieapp3"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.movieapp3"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -44,7 +45,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
     packaging {
         resources {
@@ -62,10 +63,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.53")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.53")
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk:mockk:1.13.7")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
 
     // Dependency Injection Framework
     val hiltVersion = "2.44"
@@ -74,8 +76,8 @@ dependencies {
 
     // Network
     val retrofitVersion = "2.9.0"
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
 
     // Coroutine
